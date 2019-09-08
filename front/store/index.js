@@ -4,6 +4,6 @@ export const state = () => ({
 
 export const mutations = {
   bye(state) {
-    state.hello = "goodbye";
+    state.hello = "클릭됨";
   }
 };

@@ -14,7 +14,7 @@
           @input="typingText"
         />
         <v-btn type="submit">작성</v-btn>
-        <v-btn absolute right>이미지</v-btn>
+        <v-btn absolute right type="button">이미지</v-btn>
       </v-form>
     </v-container>
   </v-card>

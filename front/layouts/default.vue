@@ -48,12 +48,12 @@ export default {
   },
   computed: {
     name() {
-      return this.$store.state.posts.name;
+      return this.$store.state.hello;
     }
   },
   methods: {
     onChangeName() {
-      this.$store.commit("posts/bye");
+      this.$store.commit("bye");
     }
   }
 };
