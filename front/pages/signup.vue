@@ -56,6 +56,20 @@ export default {
       nicknameRules: [v => !!v || "닉네임을 입력하세요."]
     };
   },
+  computed: {
+    user_info() {
+      return this.$store.state.users.user_info;
+    }
+  },
+  watch: {
+    user_info(value) {
+      if (value) {
+        this.$router.push({
+          path: "/"
+        });
+      }
+    }
+  },
   methods: {
     onSubmitForm() {
       if (this.$refs.form.validate()) {
@@ -74,7 +88,8 @@ export default {
           });
       }
     }
-  }
+  },
+  middleware: "loginCheck"
 };
 </script>
 

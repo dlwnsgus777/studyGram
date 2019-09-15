@@ -11,15 +11,20 @@
         </v-toolbar-title>
         <div class="flex-grow-1" />
         <v-toolbar-items>
-          <v-text-field
-            :style="{ display: 'flex', alignItems: 'center' }"
-            hide-details
-            prepend-icon="mdi-magnify"
-            color="white"
-            label="검색"
-          />
+          <v-form @submit.prevent="searchHashTag">
+            <div :style="{ display: 'flex', height:'100%', alignItems: 'center' }">
+              <v-text-field
+                dark
+                v-model="HashTag"
+                hide-details
+                prepend-icon="mdi-magnify"
+                color="white"
+                label="검색"
+              />
+            </div>
+          </v-form>
           <v-btn text nuxt to="/">일정관리</v-btn>
-          <v-btn text nuxt to="/profile">프로필</v-btn>
+          <v-btn text nuxt to="/">메인</v-btn>
           <v-btn text nuxt to="/signup">회원가입</v-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -43,6 +48,11 @@
 <script>
 import Login from "~/components/Login";
 export default {
+  data() {
+    return {
+      HashTag: ""
+    };
+  },
   components: {
     Login
   },
@@ -54,6 +64,12 @@ export default {
   methods: {
     onChangeName() {
       this.$store.commit("bye");
+    },
+    searchHashTag() {
+      this.$router.push({
+        path: "/hashtag/" + this.HashTag
+      });
+      this.HashTag = "";
     }
   }
 };

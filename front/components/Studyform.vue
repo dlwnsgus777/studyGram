@@ -36,17 +36,14 @@ export default {
     }
   },
   methods: {
-    typingText() {
-      this.successMsg = "";
-      this.success = false;
-    },
     submitTextArea() {
       if (this.$refs.form.validate()) {
         this.$store
           .dispatch("posts/addStudy", {
             content: this.content,
             user: {
-              nickname: this.user_info.nickname
+              nickname: this.user_info.nickname,
+              id: this.user_info.id
             },
             comments: [],
             images: [],

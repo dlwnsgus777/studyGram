@@ -2,10 +2,14 @@
   <v-container>
     <v-card>
       <v-container>
+        <v-card-title>
+          <h3>
+            <nuxt-link :to="'/user/' + post.user.id">{{post.user.nickname}}</nuxt-link>
+          </h3>
+        </v-card-title>
         <!--<v-image />-->
         <v-card-text>
           <div>
-            <h3>{{post.user.nickname}}</h3>
             <div>{{post.createdAt}}</div>
             <div>{{post.content}}</div>
           </div>
@@ -18,7 +22,7 @@
           <v-btn icon @click="clickComment">
             <v-icon>mdi-comment-outline</v-icon>
           </v-btn>
-          <v-btn icon>
+          <v-btn icon @click="addFollwList">
             <v-icon>mdi-account-multiple-plus-outline</v-icon>
           </v-btn>
           <v-btn icon @click="removePost">
@@ -31,6 +35,9 @@
         <v-container>
           <v-list style="margin-top:30px">
             <v-list-item v-for="c in post.comments" :key="c.id">
+              <v-btn icon style="margin-right:10px;" @click="removeComment(c.id)">
+                <v-icon>mdi-alpha-x-circle-outline</v-icon>
+              </v-btn>
               <v-list-item-content>
                 <h4>{{c.nickname}}</h4>
                 <div>{{c.comment}}</div>
@@ -74,9 +81,26 @@ export default {
       } else {
         this.commentClick = true;
       }
+    },
+    addFollwList() {
+      this.$store.dispatch("users/addFollowList", {
+        User: {
+          nickname: this.post.user.nickname
+        }
+      });
+    },
+    removeComment(commentId) {
+      this.$store.dispatch("posts/removeComments", {
+        id: commentId,
+        postId: this.post.id
+      });
     }
   }
 };
 </script>
-<style>
-</style>
+<style  scoped>
+a {
+  color: inherit;
+  text-decoration: none;
+}
+</style>>

@@ -3,7 +3,7 @@
     <v-container>
       <Studyform v-if="user_info" />
     </v-container>
-    <Studycard v-for="p in Posts" :key="p.id" :post="p" />
+    <Studycard v-for="p in StudyCards" :key="p.id" :post="p" />
   </div>
 </template>
 
@@ -19,8 +19,32 @@ export default {
     user_info() {
       return this.$store.state.users.user_info;
     },
-    Posts() {
-      return this.$store.state.posts.Posts;
+    StudyCards() {
+      return this.$store.state.posts.StudyCards;
+    },
+    morePost() {
+      return this.$store.state.posts.morePost;
+    }
+  },
+  fetch({ store }) {
+    store.dispatch("posts/loadStudyCard");
+  },
+  mounted() {
+    window.addEventListener("scroll", this.onScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.onScroll);
+  },
+  methods: {
+    onScroll() {
+      if (
+        window.scrollY + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        if (this.morePost) {
+          this.$store.dispatch("posts/loadStudyCard");
+        }
+      }
     }
   }
 };

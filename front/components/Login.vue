@@ -18,14 +18,15 @@
     </v-card>
   </v-container>
   <v-container v-else>
-    <v-card>
-      {{ user_info.nickname }}로그인됨
-      <v-btn @click="onlogOut">로그아웃</v-btn>
-    </v-card>
+    <userProfile :user="user_info" :followList="followList" />
   </v-container>
 </template>
 <script>
+import userProfile from "~/components/Profile";
 export default {
+  components: {
+    userProfile
+  },
   data() {
     return {
       valid: false,
@@ -41,6 +42,9 @@ export default {
   computed: {
     user_info() {
       return this.$store.state.users.user_info;
+    },
+    followList() {
+      return this.$store.state.users.followList;
     }
   },
   methods: {
@@ -48,14 +52,12 @@ export default {
       if (this.$refs.form.validate()) {
         this.$store.dispatch("users/logIn", {
           email: this.email,
-          nickname: "준스"
+          nickname: "준스",
+          id: 2
         });
       } else {
         alert("회원가입 시도 실패");
       }
-    },
-    onlogOut() {
-      this.$store.dispatch("users/logOut");
     }
   }
 };
