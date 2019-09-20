@@ -27,6 +27,12 @@ export const mutations = {
 export const actions = {
   // 회원가입
   signUp(context, payload) {
+    console.dir(payload);
+    this.$axios.post("http://localhost:3001/user", {
+      email: payload.email,
+      nickname: payload.nickname,
+      password: payload.password
+    });
     context.commit("setInfo", payload);
   },
   // 로그인
