@@ -27,7 +27,8 @@ export default {
     }
   },
   fetch({ store }) {
-    store.dispatch("posts/loadStudyCard");
+    console.log("포스트 패치");
+    return store.dispatch("posts/loadStudyCard");
   },
   mounted() {
     window.addEventListener("scroll", this.onScroll);
@@ -35,6 +36,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener("scroll", this.onScroll);
   },
+
   methods: {
     onScroll() {
       if (

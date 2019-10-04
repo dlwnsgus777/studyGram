@@ -17,7 +17,7 @@
 <script>
 export default {
   props: {
-    postId: String
+    postId: Number
   },
   data() {
     return {
@@ -44,9 +44,7 @@ export default {
         this.$store
           .dispatch("posts/addComments", {
             postId: this.postId,
-            comment: this.commentText,
-            nickname: this.user_info.nickname,
-            id: Date.now()
+            comment: this.commentText
           })
           .then(() => {
             this.successMsg = "등록성공";

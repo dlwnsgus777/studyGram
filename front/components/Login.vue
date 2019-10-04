@@ -47,13 +47,15 @@ export default {
       return this.$store.state.users.followList;
     }
   },
+  fetch({ store }) {
+    return store.dispatch("users/loadUser");
+  },
   methods: {
     onSubmitForm() {
       if (this.$refs.form.validate()) {
         this.$store.dispatch("users/logIn", {
           email: this.email,
-          nickname: "준스",
-          id: 2
+          password: this.password
         });
       } else {
         alert("회원가입 시도 실패");

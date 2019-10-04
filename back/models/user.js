@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8_general_ci"
     }
   );
-  User.associate = db => {};
+  User.associate = db => {
+    db.User.hasMany(db.Studycard);
+    db.User.hasMany(db.Comment);
+  };
   return User;
 };

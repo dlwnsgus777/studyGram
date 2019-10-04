@@ -4,7 +4,7 @@
       <v-container>
         <v-card-title>
           <h3>
-            <nuxt-link :to="'/user/' + post.user.id">{{post.user.nickname}}</nuxt-link>
+            <nuxt-link :to="'/user/' + post.User.id">{{post.User.nickname}}</nuxt-link>
           </h3>
         </v-card-title>
         <!--<v-image />-->
@@ -39,8 +39,8 @@
                 <v-icon>mdi-alpha-x-circle-outline</v-icon>
               </v-btn>
               <v-list-item-content>
-                <h4>{{c.nickname}}</h4>
-                <div>{{c.comment}}</div>
+                <h4>{{c.User.nickname}}</h4>
+                <div>{{c.content}}</div>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -72,13 +72,16 @@ export default {
   methods: {
     removePost() {
       this.$store.dispatch("posts/remove", {
-        id: this.post.id
+        postId: this.post.id
       });
     },
     clickComment() {
       if (this.commentClick) {
         this.commentClick = false;
       } else {
+        this.$store.dispatch("posts/loadComment", {
+          postId: this.post.id
+        });
         this.commentClick = true;
       }
     },

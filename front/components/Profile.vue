@@ -35,7 +35,7 @@ import Studygroup from "~/components/Studygroup";
 export default {
   props: {
     user: Object,
-    followList: Object
+    followList: Array
   },
   components: {
     Studygroup

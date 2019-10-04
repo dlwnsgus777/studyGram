@@ -25,23 +25,73 @@ export const mutations = {
 
 // 비동기
 export const actions = {
+  async loadUser(context) {
+    try {
+      const res = await this.$axios.get("http://localhost:3001/user", {
+        withCredentials: true
+      });
+      context.commit("setInfo", res.data);
+    } catch (error) {
+      console.error("오류남", error);
+    }
+  },
+
   // 회원가입
   signUp(context, payload) {
-    console.dir(payload);
-    this.$axios.post("http://localhost:3001/user", {
-      email: payload.email,
-      nickname: payload.nickname,
-      password: payload.password
-    });
-    context.commit("setInfo", payload);
+    this.$axios
+      .post(
+        "http://localhost:3001/user",
+        {
+          email: payload.email,
+          nickname: payload.nickname,
+          password: payload.password
+        },
+        {
+          withCredentials: true
+        }
+      )
+      .then(() => {})
+      .catch(err => {
+        console.log(err);
+      });
   },
   // 로그인
   logIn(context, payload) {
-    context.commit("setInfo", payload);
+    this.$axios
+      .post(
+        "http://localhost:3001/user/login",
+        {
+          email: payload.email,
+          password: payload.password
+        },
+        {
+          withCredentials: true
+        }
+      )
+      .then(data => {
+        console.log(data.data);
+        context.commit("setInfo", data.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   },
   // 로그아웃
-  logOut(context, payload) {
-    context.commit("setInfo", null);
+  logOut(context) {
+    this.$axios
+      .post(
+        "http://localhost:3001/user/logout",
+        {},
+        {
+          withCredentials: true
+        }
+      )
+      .then(() => {
+        context.commit("setInfo", null);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   },
   addFollowList(context, payload) {
     context.commit("addFollowList", payload);
