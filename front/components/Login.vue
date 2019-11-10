@@ -18,7 +18,7 @@
     </v-card>
   </v-container>
   <v-container v-else>
-    <userProfile :user="user_info" :followList="followList" />
+    <userProfile :user="user_info" :followerList="followerList" :followingList="followingList" />
   </v-container>
 </template>
 <script>
@@ -43,8 +43,11 @@ export default {
     user_info() {
       return this.$store.state.users.user_info;
     },
-    followList() {
-      return this.$store.state.users.followList;
+    followerList() {
+      return this.$store.state.users.followerList;
+    },
+    followingList() {
+      return this.$store.state.users.followingList;
     }
   },
   fetch({ store }) {

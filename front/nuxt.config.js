@@ -22,9 +22,13 @@ module.exports = {
 
   buildModules: [
     // Simple usage
-    "@nuxtjs/vuetify",
-
+    "@nuxtjs/vuetify"
   ],
+  // axios: {
+  //   browserBaseURL: "http://localhost:3001",
+  //   baseURL: "http://localhost:3001",
+  //   https: false
+  // },
 
   /*
    ** Build configuration

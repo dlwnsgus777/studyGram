@@ -17,7 +17,7 @@
           <v-card>
             <v-container>
               <v-subheader>공부고싶은 사람들</v-subheader>
-              <Studygroup v-for="p in followList" :key="p.id" :followList="p" />
+              <Studygroup v-for="p in followingList" :key="p.id" :followList="p" />
             </v-container>
           </v-card>
         </v-container>
@@ -35,7 +35,8 @@ import Studygroup from "~/components/Studygroup";
 export default {
   props: {
     user: Object,
-    followList: Array
+    followingList: Array,
+    followerList: Array
   },
   components: {
     Studygroup

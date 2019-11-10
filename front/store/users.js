@@ -1,7 +1,7 @@
 export const state = () => ({
   user_info: null, //로그인 상태
-  followList: [],
-  follower: []
+  followingList: [],
+  followerList: []
 });
 
 // 동기
@@ -11,12 +11,12 @@ export const mutations = {
     state.user_info = payload;
   },
   // 친구추가
-  addFollowList(state, payload) {
-    state.followList.unshift(payload);
+  addFollowingList(state, payload) {
+    state.followingList.unshift(payload);
   },
   //친구 삭제
-  removeFollowList(state, payload) {
-    const index = state.followList.findIndex(
+  removeFollowingList(state, payload) {
+    const index = state.followingList.findIndex(
       v => v.User.nickname === payload.nickname
     );
     state.followList.splice(index, 1);

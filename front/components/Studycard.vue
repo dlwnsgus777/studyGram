@@ -7,7 +7,7 @@
             <nuxt-link :to="'/user/' + post.User.id">{{post.User.nickname}}</nuxt-link>
           </h3>
         </v-card-title>
-        <!--<v-image />-->
+        <StudyImages :images="post.Images || []" />
         <v-card-text>
           <div>
             <div>{{post.createdAt}}</div>
@@ -16,8 +16,8 @@
         </v-card-text>
         <v-card-actions>
           <div class="flex-grow-1" />
-          <v-btn icon>
-            <v-icon>mdi-thumb-up-outline</v-icon>
+          <v-btn icon @click="onClickLike">
+            <v-icon>{{likeIcon}}</v-icon>
           </v-btn>
           <v-btn icon @click="clickComment">
             <v-icon>mdi-comment-outline</v-icon>
@@ -52,12 +52,14 @@
 
 <script>
 import CommentForm from "~/components/CommentForm";
+import StudyImages from "~/components/StudyImages";
 export default {
   props: {
     post: Object
   },
   components: {
-    CommentForm
+    CommentForm,
+    StudyImages
   },
   data() {
     return {
@@ -65,11 +67,32 @@ export default {
     };
   },
   computed: {
+    liked() {
+      return !!(this.post.Likers || []).find(
+        v => v.id === (this.user_info && this.user_info.id)
+      );
+    },
     user_info() {
       return this.$store.state.users.user_info;
+    },
+    likeIcon() {
+      return this.liked ? "mdi-thumb-up" : "mdi-thumb-up-outline";
     }
   },
   methods: {
+    onClickLike() {
+      if (!this.user_info) {
+        return alert("로그인필요함");
+      }
+      if (this.liked) {
+        return this.$store.dispatch("posts/unlikePost", {
+          postId: this.post.id
+        });
+      }
+      return this.$store.dispatch("posts/likePost", {
+        postId: this.post.id
+      });
+    },
     removePost() {
       this.$store.dispatch("posts/remove", {
         postId: this.post.id

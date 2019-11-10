@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Studycard.associate = db => {
+    db.Studycard.belongsToMany(db.User, { through: "Like", as: "Likers" });
     db.Studycard.belongsTo(db.User);
     db.Studycard.hasMany(db.Comment);
     db.Studycard.hasMany(db.Image);

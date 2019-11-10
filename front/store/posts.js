@@ -14,11 +14,11 @@ export const mutations = {
   },
   removePosts(state, payload) {
     // postId로 해당 post의 index찾기
-    const index = state.StudyCards.findIndex(v => v.id === payload.postId);
+    const index = state.StudyCards.findIndex(v => v.id === payload);
     state.StudyCards.splice(index, 1);
   },
   addComments(state, payload) {
-    const index = state.StudyCards.findIndex(v => v.id === payload.postId);
+    const index = state.StudyCards.findIndex(v => v.id === payload.StudycardId);
     state.StudyCards[index].comments.unshift(payload);
   },
   removeComments(state, payload) {
@@ -41,10 +41,57 @@ export const mutations = {
   loadComment(state, payload) {
     const index = state.StudyCards.findIndex(v => v.id === payload.PostId);
     Vue.set(state.StudyCards[index], "comments", payload.data);
+  },
+  likePost(state, payload) {
+    const index = state.StudyCards.findIndex(v => v.id === payload.postId);
+    state.StudyCards[index].Likers.push({
+      id: payload.userId
+    });
+  },
+  unlikePost(state, payload) {
+    const index = state.StudyCards.findIndex(v => v.id === payload.postId);
+    const userIndex = state.StudyCards[index].Likers.findIndex(
+      v => v.id === payload.userId
+    );
+    state.StudyCards[index].Likers.splice(userIndex, 1);
   }
 };
 
 export const actions = {
+  likePost({ commit }, payload) {
+    this.$axios
+      .post(
+        `http://localhost:3001/studycard/${payload.postId}/like`,
+        {},
+        {
+          withCredentials: true
+        }
+      )
+      .then(res => {
+        commit(this.likePost, {
+          userId: res.data.userId,
+          StudycardId: payload.postId
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  },
+  unlikePost({ commit }, payload) {
+    this.$axios
+      .post(`http://localhost:3001/studycard/${payload.postId}/like`, {
+        withCredentials: true
+      })
+      .then(res => {
+        commit(this.unlikePost, {
+          userId: res.data.userId,
+          StudycardId: payload.postId
+        });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  },
   addStudy(context, payload) {
     // 게시글 추가
     this.$axios
@@ -52,7 +99,7 @@ export const actions = {
         "http://localhost:3001/studycard",
         {
           content: payload.content,
-          imagePath: context.state.imagePath
+          image: context.state.imagePath
         },
         {
           withCredentials: true

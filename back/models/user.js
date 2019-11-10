@@ -23,6 +23,17 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = db => {
     db.User.hasMany(db.Studycard);
     db.User.hasMany(db.Comment);
+    db.User.belongsToMany(db.Studycard, { through: "Like", as: "Liked" });
+    db.User.belongsToMany(db.User, {
+      through: "Follow",
+      foreignKey: "followingId",
+      as: "Followers"
+    });
+    db.User.belongsToMany(db.User, {
+      through: "Follow",
+      foreignKey: "followergId",
+      as: "Followings"
+    });
   };
   return User;
 };

@@ -38,12 +38,34 @@ router.post("/", loginCheck, async (req, res, next) => {
       );
       await newStudy.addHashtags(result.map(r => r[0]));
     }
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        await Promise.all(
+          req.body.image.map(image => {
+            return db.Image.create({ src: image, StudycardId: newStudy.id });
+          })
+        );
+      } else {
+        await db.Image.create({
+          src: req.body.image,
+          StudycardId: newStudy.id
+        });
+      }
+    }
     const fullStudy = await db.Studycard.findOne({
       where: { id: newStudy.id },
       include: [
         {
           model: db.User,
           attributes: ["id", "nickname"]
+        },
+        {
+          model: db.User,
+          as: "Likers",
+          attributes: ["id"]
+        },
+        {
+          model: db.Image
         }
       ]
     });
@@ -134,4 +156,44 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
+router.post("/:id/like", loginCheck, async (req, res, next) => {
+  try {
+    const post = await db.Studycard.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+    if (!post) {
+      return res.status(404).send("존재하지않습니다.");
+    }
+    await post.addLiker(req.user.id);
+    res.json({
+      userId: req.user.id
+    });
+  } catch (error) {
+    console.dir(req.params);
+    console.error(error);
+    next(error);
+  }
+});
+
+router.delete("/:id/like", loginCheck, async (req, res, next) => {
+  try {
+    const post = await db.Studycard.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+    if (!post) {
+      return res.status(404).send("존재하지않습니다.");
+    }
+    await post.removeLiker(req.user.id);
+    res.json({
+      userId: req.user.id
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 module.exports = router;
