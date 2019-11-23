@@ -3,19 +3,25 @@ const router = express.Router();
 
 const db = require("../models");
 
-router.get("/", async (req, res, next) => {
+router.get("/:tag", async (req, res, next) => {
   try {
     let where = {};
     if (parseInt(req.query.lastId, 10)) {
       where = {
         id: {
-          [db.sequelize.Op.lt]: parseInt(req.query.lastId, 10)
+          [db.Sequelize.Op.lt]: parseInt(req.query.lastId, 10)
         }
       };
     }
     const studys = await db.Studycard.findAll({
       where,
       include: [
+        {
+          model: db.Hashtag,
+          where: {
+            name: decodeURIComponent(req.params.tag)
+          }
+        },
         {
           model: db.User,
           attributes: ["id", "nickname"]

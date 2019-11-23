@@ -1,15 +1,19 @@
 <template>
   <div>
+    <v-container>
+      <Studyform v-if="user_info" />
+    </v-container>
     <Studycard v-for="p in StudyCards" :key="p.id" :post="p" />
   </div>
 </template>
 
 <script>
 import Studycard from "~/components/Studycard";
-
+import Studyform from "~/components/Studyform";
 export default {
   components: {
-    Studycard
+    Studycard,
+    Studyform
   },
   computed: {
     user_info() {
@@ -23,7 +27,8 @@ export default {
     }
   },
   fetch({ store }) {
-    store.dispatch("posts/loadStudyCard");
+    console.log("포스트 패치");
+    return store.dispatch("posts/loadStudyCard");
   },
   mounted() {
     window.addEventListener("scroll", this.onScroll);
@@ -31,6 +36,7 @@ export default {
   beforeDestroy() {
     window.removeEventListener("scroll", this.onScroll);
   },
+
   methods: {
     onScroll() {
       if (

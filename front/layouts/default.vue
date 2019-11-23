@@ -12,7 +12,9 @@
         <div class="flex-grow-1" />
         <v-toolbar-items>
           <v-form @submit.prevent="searchHashTag">
-            <div :style="{ display: 'flex', height:'100%', alignItems: 'center' }">
+            <div
+              :style="{ display: 'flex', height: '100%', alignItems: 'center' }"
+            >
               <v-text-field
                 dark
                 v-model="HashTag"
@@ -36,11 +38,7 @@
       <v-col cols="12" md="6">
         <nuxt />
       </v-col>
-      <v-col cols="12" md="3">
-        오른쪽
-        <div>{{name}}</div>
-        <v-btn @click="onChangeName">바이바이</v-btn>
-      </v-col>
+      <v-col cols="12" md="3"> </v-col>
     </v-row>
   </v-app>
 </template>
@@ -62,9 +60,6 @@ export default {
     }
   },
   methods: {
-    onChangeName() {
-      this.$store.commit("bye");
-    },
     searchHashTag() {
       this.$router.push({
         path: "/hashtag/" + this.HashTag

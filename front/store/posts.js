@@ -1,4 +1,5 @@
 import Vue from "vue";
+import throttle from "lodash.throttle";
 
 export const state = () => ({
   StudyCards: [],
@@ -44,12 +45,14 @@ export const mutations = {
   },
   likePost(state, payload) {
     const index = state.StudyCards.findIndex(v => v.id === payload.postId);
+
     state.StudyCards[index].Likers.push({
       id: payload.userId
     });
   },
   unlikePost(state, payload) {
     const index = state.StudyCards.findIndex(v => v.id === payload.postId);
+
     const userIndex = state.StudyCards[index].Likers.findIndex(
       v => v.id === payload.userId
     );
@@ -68,9 +71,9 @@ export const actions = {
         }
       )
       .then(res => {
-        commit(this.likePost, {
+        commit("likePost", {
           userId: res.data.userId,
-          StudycardId: payload.postId
+          postId: payload.postId
         });
       })
       .catch(err => {
@@ -79,13 +82,13 @@ export const actions = {
   },
   unlikePost({ commit }, payload) {
     this.$axios
-      .post(`http://localhost:3001/studycard/${payload.postId}/like`, {
+      .delete(`http://localhost:3001/studycard/${payload.postId}/like`, {
         withCredentials: true
       })
       .then(res => {
-        commit(this.unlikePost, {
+        commit("unlikePost", {
           userId: res.data.userId,
-          StudycardId: payload.postId
+          postId: payload.postId
         });
       })
       .catch(err => {
@@ -145,20 +148,23 @@ export const actions = {
   removeComments(context, payload) {
     context.commit("removeComments", payload);
   },
-  async loadStudyCard(context, payload) {
-    if (context.state.morePost) {
-      try {
+  loadStudyCard: throttle(async function(context, payload) {
+    console.log(state.StudyCards);
+    try {
+      if (context.state.morePost) {
+        const lastPost =
+          context.state.StudyCards[context.state.StudyCards.length - 1];
         const res = await this.$axios.get(
-          `http://localhost:3001/studycards?offset=${
-            context.state.StudyCards.length
-          }&limit=10`
+          `http://localhost:3001/studycards?lastId=${lastPost &&
+            lastPost.id}&limit=10`
         );
         context.commit("loadStudyCard", res.data);
-      } catch (error) {
-        console.log(error);
+        return;
       }
+    } catch (error) {
+      console.log(error);
     }
-  },
+  }, 3000),
   uploadImages(context, payload) {
     this.$axios
       .post("http://localhost:3001/studycard/images", payload, {
@@ -182,5 +188,21 @@ export const actions = {
         alert("loadComment 에러");
         console.log(err);
       });
-  }
+  },
+  loadHashtag: throttle(async function(context, payload) {
+    try {
+      if (context.state.morePost) {
+        const lastPost =
+          context.state.StudyCards[context.state.StudyCards.length - 1];
+        const res = await this.$axios.get(
+          `http://localhost:3001/hashtag/${payload.hashTag}?lastId=${lastPost &&
+            lastPost.id}&limit=10`
+        );
+        context.commit("loadStudyCard", res.data);
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, 3000)
 };

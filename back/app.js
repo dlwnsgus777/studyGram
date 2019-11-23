@@ -9,6 +9,7 @@ const morgan = require("morgan");
 const userRouter = require("./routes/user");
 const studyCardRouter = require("./routes/studycard");
 const studyCardsRouter = require("./routes/studycards");
+const hashtag = require("./routes/hashtag");
 
 const db = require("./models");
 const Mypassport = require("./passport");
@@ -49,6 +50,7 @@ app.get("/", (req, res) => {
 app.use("/user", userRouter);
 app.use("/studycard", studyCardRouter);
 app.use("/studycards", studyCardsRouter);
+app.use("/hashtag", hashtag);
 
 app.listen(3001, () => {
   console.log(`백엔드 서버 포트 ${3001}번`);

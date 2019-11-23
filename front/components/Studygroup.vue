@@ -1,26 +1,29 @@
 <template>
-  <v-col cols="12" md="4" style="display:inline-block">
-    <v-list>
-      <v-list-content>
+  <v-list style="display:inline-block">
+    <v-list-item>
+      <div>
         <v-avatar color="indigo" size="40px" :tile="false">
-          <span class="white--text headline">{{followList.User.nickname[0]}}</span>
+          <span class="white--text headline">{{followList.nickname}}</span>
         </v-avatar>
-        <v-list-item-title>{{followList.User.nickname}}</v-list-item-title>
+        <v-list-item-title>{{followList.nickname}}</v-list-item-title>
         <v-icon
+          v-if="canDelete"
           @click="removeFollowList"
           @mouseover="iconColor"
           @mouseleave="iconColor"
           :color="color"
         >mdi-account-multiple-minus-outline</v-icon>
-      </v-list-content>
-    </v-list>
-  </v-col>
+      </div>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script>
 export default {
+  name: "Studygroup",
   props: {
-    followList: Object
+    followList: Object,
+    canDelete: Boolean
   },
   data() {
     return {
@@ -29,8 +32,8 @@ export default {
   },
   methods: {
     removeFollowList() {
-      this.$store.dispatch("users/removeFollowList", {
-        nickname: this.followList.User.nickname
+      this.$store.dispatch("users/unFollow", {
+        userId: this.followList.id
       });
     },
     iconColor() {

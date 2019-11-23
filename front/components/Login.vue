@@ -3,7 +3,13 @@
     <v-card>
       <v-form ref="form" v-model="valid" @submit.prevent="onSubmitForm">
         <v-container>
-          <v-text-field v-model="email" :rules="emailRules" label="이메일" type="email" required />
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="이메일"
+            type="email"
+            required
+          />
           <v-text-field
             v-model="password"
             :rules="passwordRules"
@@ -18,7 +24,11 @@
     </v-card>
   </v-container>
   <v-container v-else>
-    <userProfile :user="user_info" :followerList="followerList" :followingList="followingList" />
+    <userProfile
+      :user="user_info"
+      :followerList="followerList"
+      :followingList="followingList"
+    />
   </v-container>
 </template>
 <script>
@@ -44,10 +54,10 @@ export default {
       return this.$store.state.users.user_info;
     },
     followerList() {
-      return this.$store.state.users.followerList;
+      return this.$store.state.users.user_info.Followers;
     },
     followingList() {
-      return this.$store.state.users.followingList;
+      return this.$store.state.users.user_info.Followings;
     }
   },
   fetch({ store }) {
@@ -67,5 +77,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

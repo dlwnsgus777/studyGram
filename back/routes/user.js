@@ -48,7 +48,7 @@ router.post("/", notLoginCheck, async (req, res, next) => {
 });
 
 router.post("/login", notLoginCheck, (req, res, next) => {
-  passport.authenticate("local", (err, success, fail) => {
+  passport.authenticate("local", (err, user, fail) => {
     if (err) {
       console.log(err);
       return next(err);
@@ -58,12 +58,36 @@ router.post("/login", notLoginCheck, (req, res, next) => {
       // 400번대는 거절
       return res.status(401).send(fail.message);
     }
-    return req.logIn(success, async err => {
-      if (err) {
-        console.log(err);
-        return next(err);
+    return req.logIn(user, async err => {
+      try {
+        if (err) {
+          console.log(err);
+          return next(err);
+        }
+        const fullUser = await db.User.findOne({
+          where: { id: user.id },
+          attributes: ["id", "email", "nickname"],
+          include: [
+            {
+              model: db.Studycard,
+              attributes: ["id"]
+            },
+            {
+              model: db.User,
+              as: "Followings",
+              attributes: ["id", "nickname"]
+            },
+            {
+              model: db.User,
+              as: "Followers",
+              attributes: ["id", "nickname"]
+            }
+          ]
+        });
+        return res.json(fullUser);
+      } catch (error) {
+        console.error("여기냐", error);
       }
-      return res.status(200).json(success);
     });
   })(req, res, next);
 });
@@ -73,6 +97,55 @@ router.post("/logout", loginCheck, (req, res) => {
     req.logOut();
     req.session.destroy();
     return res.status(200).send("로그아웃 성공");
+  }
+});
+
+router.post("/:id/follow", loginCheck, async (req, res, next) => {
+  try {
+    const user = await db.User.findOne({
+      where: {
+        id: req.user.id
+      }
+    });
+    await user.addFollowing(req.params.id);
+    res.send(req.params.id);
+  } catch (error) {
+    console.log(error);
+    next(e);
+  }
+});
+
+router.delete("/:id/follow", loginCheck, async (req, res, next) => {
+  try {
+    const user = await db.User.findOne({
+      where: {
+        id: req.user.id
+      }
+    });
+    await user.removeFollowing(req.params.id);
+    res.send(req.params.id);
+  } catch (error) {
+    console.log(err);
+    next(e);
+  }
+});
+
+router.patch("/nickname", loginCheck, async (req, res, next) => {
+  try {
+    await db.User.update(
+      {
+        nickname: req.body.nickname
+      },
+      {
+        where: {
+          id: req.user.id
+        }
+      }
+    );
+    res.send(res.body.nickname);
+  } catch (error) {
+    console.log(err);
+    next(e);
   }
 });
 

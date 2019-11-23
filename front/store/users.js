@@ -1,7 +1,5 @@
 export const state = () => ({
-  user_info: null, //로그인 상태
-  followingList: [],
-  followerList: []
+  user_info: null //로그인 상태
 });
 
 // 동기
@@ -10,16 +8,17 @@ export const mutations = {
   setInfo(state, payload) {
     state.user_info = payload;
   },
-  // 친구추가
-  addFollowingList(state, payload) {
-    state.followingList.unshift(payload);
-  },
   //친구 삭제
   removeFollowingList(state, payload) {
-    const index = state.followingList.findIndex(
-      v => v.User.nickname === payload.nickname
+    const index = state.user_info.Followings.findIndex(
+      v => v.id === payload.userId
     );
-    state.followList.splice(index, 1);
+    state.user_info.Followings.splice(index, 1);
+  },
+  follow(state, payload) {
+    state.user_info.Followings.push({
+      id: payload.userId
+    });
   }
 };
 
@@ -94,9 +93,39 @@ export const actions = {
       });
   },
   addFollowList(context, payload) {
-    context.commit("addFollowList", payload);
+    context.commit("addFollowerList", payload);
   },
   removeFollowList(context, payload) {
-    context.commit("removeFollowList", payload);
+    context.commit("removeFollowingList", payload);
+  },
+  addFollow({ commit }, payload) {
+    this.$axios
+      .post(
+        `http://localhost:3001/user/${payload.userId}/follow`,
+        {},
+        { withCredentials: true }
+      )
+      .then(res => {
+        commit("follow", {
+          userId: payload.userId
+        });
+      })
+      .catch(e => {
+        console.error(e);
+      });
+  },
+  unFollow({ commit }, payload) {
+    return this.$axios
+      .delete(`http://localhost:3001/user/${payload.userId}/follow`, {
+        withCredentials: true
+      })
+      .then(res => {
+        commit("removeFollowingList", {
+          userId: payload.userId
+        });
+      })
+      .catch(e => {
+        console.err(e);
+      });
   }
 };
